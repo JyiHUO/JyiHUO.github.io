@@ -229,6 +229,198 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/25/faceswap/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="John Doe">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hexo">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/11/25/faceswap/" itemprop="url">faceswap</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-11-25T22:35:57+08:00">
+                2018-11-25
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="FaceSwap"><a href="#FaceSwap" class="headerlink" title="FaceSwap"></a>FaceSwap</h1><p>Swap face between two photos for Python 3 with OpenCV and dlib.</p>
+<h2 id="Get-Started"><a href="#Get-Started" class="headerlink" title="Get Started"></a>Get Started</h2><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python main.py --src imgs/test6.jpg --dst imgs/test7.jpg --out results/output6_7.jpg --correct_color</span><br></pre></td></tr></table></figure>
+<table>
+<thead>
+<tr>
+<th>Source</th>
+<th>Destination</th>
+<th>Result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><img src="imgs/test6.jpg" alt=""></td>
+<td><img src="imgs/test7.jpg" alt=""></td>
+<td><img src="results/output6_7.jpg" alt=""></td>
+</tr>
+</tbody>
+</table>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python main.py --src imgs/test6.jpg --dst imgs/test7.jpg --out results/output6_7_2d.jpg --correct_color --warp_2d</span><br></pre></td></tr></table></figure>
+<table>
+<thead>
+<tr>
+<th>Source</th>
+<th>Destination</th>
+<th>Result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><img src="imgs/test6.jpg" alt=""></td>
+<td><img src="imgs/test7.jpg" alt=""></td>
+<td><img src="results/output6_7_2d.jpg" alt=""></td>
+</tr>
+</tbody>
+</table>
+<h2 id="Install"><a href="#Install" class="headerlink" title="Install"></a>Install</h2><h3 id="Requirements"><a href="#Requirements" class="headerlink" title="Requirements"></a>Requirements</h3><ul>
+<li><a href="http://dlib.net/" target="_blank" rel="noopener">dlib</a></li>
+<li>OpenCV 3</li>
+</ul>
+<p>Note: See <a href="requirements.txt">requirements.txt</a> for more details.</p>
+<h3 id="Git-Clone"><a href="#Git-Clone" class="headerlink" title="Git Clone"></a>Git Clone</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> https://github.com/wuhuikai/FaceSwap.git</span><br></pre></td></tr></table></figure>
+<h3 id="Swap-Your-Face"><a href="#Swap-Your-Face" class="headerlink" title="Swap Your Face"></a>Swap Your Face</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python main.py ...</span><br></pre></td></tr></table></figure>
+<p>Note: Run <strong>python main.py -h</strong> for more details.</p>
+<h2 id="More-Results"><a href="#More-Results" class="headerlink" title="More Results"></a>More Results</h2><table>
+<thead>
+<tr>
+<th>From</th>
+<th>To</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><img src="imgs/test4.jpg" alt=""></td>
+<td><img src="results/output6_4.jpg" alt=""></td>
+</tr>
+<tr>
+<td><img src="imgs/test3.jpg" alt=""></td>
+<td><img src="results/output6_3.jpg" alt=""></td>
+</tr>
+<tr>
+<td><img src="imgs/test2.jpg" alt=""></td>
+<td><img src="results/output6_2_2d.jpg" alt=""></td>
+</tr>
+<tr>
+<td><img src="imgs/test1.jpg" alt=""></td>
+<td><img src="results/output6_1.jpg" alt=""></td>
+</tr>
+<tr>
+<td><img src="imgs/test4.jpg" alt=""></td>
+<td><img src="results/output7_4.jpg" alt=""></td>
+</tr>
+</tbody>
+</table>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/25/mask-rcnn/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -407,126 +599,6 @@
 <h3 id="Mask-RCNN-Shiny"><a href="#Mask-RCNN-Shiny" class="headerlink" title="Mask-RCNN Shiny"></a><a href="https://github.com/huuuuusy/Mask-RCNN-Shiny" target="_blank" rel="noopener">Mask-RCNN Shiny</a></h3><p>A computer vision class project by HU Shiyu to apply the color pop effect on people with beautiful results.<br><img src="assets/project_shiny1.jpg" alt=""></p>
 <h3 id="Mapping-Challenge-Convert-satellite-imagery-to-maps-for-use-by-humanitarian-organisations"><a href="#Mapping-Challenge-Convert-satellite-imagery-to-maps-for-use-by-humanitarian-organisations" class="headerlink" title="Mapping Challenge: Convert satellite imagery to maps for use by humanitarian organisations."></a><a href="https://github.com/crowdAI/crowdai-mapping-challenge-mask-rcnn" target="_blank" rel="noopener">Mapping Challenge</a>: Convert satellite imagery to maps for use by humanitarian organisations.</h3><p><img src="assets/mapping_challenge.png" alt="Mapping Challenge"></p>
 <h3 id="GRASS-GIS-Addon-to-generate-vector-masks-from-geospatial-imagery-Based-on-a-Master’s-thesis-by-Ondrej-Pesek"><a href="#GRASS-GIS-Addon-to-generate-vector-masks-from-geospatial-imagery-Based-on-a-Master’s-thesis-by-Ondrej-Pesek" class="headerlink" title="GRASS GIS Addon to generate vector masks from geospatial imagery. Based on a Master’s thesis by Ondřej Pešek."></a><a href="https://github.com/ctu-geoforall-lab/i.ann.maskrcnn" target="_blank" rel="noopener">GRASS GIS Addon</a> to generate vector masks from geospatial imagery. Based on a <a href="https://github.com/ctu-geoforall-lab-projects/dp-pesek-2018" target="_blank" rel="noopener">Master’s thesis</a> by Ondřej Pešek.</h3><p><img src="assets/project_grass_gis.png" alt="GRASS GIS Image"></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/25/test2/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="John Doe">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hexo">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/11/25/test2/" itemprop="url">test2</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-11-25T21:47:10+08:00">
-                2018-11-25
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p><img src="/images/person.jpg" alt=""></p>
 
           
         
