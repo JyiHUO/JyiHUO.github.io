@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="nlp,">
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2">
+
+
+
+
+
+
+<meta name="description" content="Word2veclink 词向量 word vectors 训练过程">
+<meta name="keywords" content="nlp">
+<meta property="og:type" content="article">
+<meta property="og:title" content="word2vec">
+<meta property="og:url" content="http://yoursite.com/2018/12/07/Word2vec/index.html">
+<meta property="og:site_name" content="霍俊毅">
+<meta property="og:description" content="Word2veclink 词向量 word vectors 训练过程">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="http://yoursite.com/2018/12/07/Word2vec/Word2vec/C1001E23-C1B0-4F54-827A-F58E400555AE.png">
+<meta property="og:image" content="http://yoursite.com/2018/12/07/Word2vec/Word2vec/34563E52-055D-43A2-A1C1-A1842C394061.png">
+<meta property="og:image" content="http://yoursite.com/2018/12/07/Word2vec/Word2vec/EE1E58F5-2C34-46F1-8FED-6D9CE509A162.png">
+<meta property="og:image" content="http://yoursite.com/2018/12/07/Word2vec/Word2vec/A96595CB-5A81-426E-9E88-F8FE19B4A394.png">
+<meta property="og:image" content="http://yoursite.com/2018/12/07/Word2vec/Word2vec/4137929D-40C1-4790-A72B-80ADCB5446E7.png">
+<meta property="og:image" content="http://yoursite.com/2018/12/07/Word2vec/Word2vec/D5A624F7-6533-4BB9-AB66-D51EF837F93B.png">
+<meta property="og:image" content="http://yoursite.com/2018/12/07/Word2vec/Word2vec/930DA868-3BF5-48A2-8E03-08744BE55527.png">
+<meta property="og:image" content="http://yoursite.com/2018/12/07/Word2vec/Word2vec/B5C7DFF2-EDFF-418B-8001-3EDA6EBF1BDE.png">
+<meta property="og:image" content="http://yoursite.com/2018/12/07/Word2vec/Word2vec/6C4BE055-A921-40F4-BB30-CD1412C7BDF4.png">
+<meta property="og:image" content="http://yoursite.com/2018/12/07/Word2vec/Word2vec/E5EA3AD3-9CC0-4315-BFE8-1129DDEE4096.png">
+<meta property="og:image" content="http://yoursite.com/2018/12/07/Word2vec/Word2vec/2DD40E59-F3F9-4C1D-82FE-AC8F52403AB0.png">
+<meta property="og:image" content="http://yoursite.com/2018/12/07/Word2vec/Word2vec/5B3C779B-121A-41CD-83D9-EF5C4E3ADDBC.png">
+<meta property="og:image" content="http://yoursite.com/2018/12/07/Word2vec/Word2vec/4853B8BC-BEF7-43C7-B63F-CBC57808074D.png">
+<meta property="og:image" content="http://yoursite.com/2018/12/07/Word2vec/Word2vec/FFCE57C4-A69A-4315-95BD-C7CC54ACDD0B.png">
+<meta property="og:image" content="http://yoursite.com/2018/12/07/Word2vec/Word2vec/BAA9928F-1109-42E1-A1AF-7E549C88097F.png">
+<meta property="og:image" content="http://yoursite.com/2018/12/07/Word2vec/Word2vec/E7DE2876-A658-4DBC-885F-6D7001D0422E.png">
+<meta property="og:image" content="http://yoursite.com/2018/12/07/Word2vec/Word2vec/3745D1AB-4ABF-41CA-ADFD-AD35FE20AA48.png">
+<meta property="og:image" content="http://yoursite.com/2018/12/07/Word2vec/Word2vec/C05A1040-5A00-488D-9C21-5B45F5B49332.png">
+<meta property="og:image" content="http://yoursite.com/2018/12/07/Word2vec/Word2vec/EC0CE93E-4EF0-4792-9B6A-2006A137D541.png">
+<meta property="og:image" content="http://yoursite.com/2018/12/07/Word2vec/Word2vec/72942C98-2A50-4907-A27C-4AD672E19D10.png">
+<meta property="og:image" content="http://yoursite.com/2018/12/07/Word2vec/Word2vec/8AD6B18F-4B28-4F5B-AF51-E0D2080C3825.png">
+<meta property="og:image" content="http://yoursite.com/2018/12/07/Word2vec/Word2vec/6AD1E2C4-8285-46B1-9926-C3FCE3CF2F8C.png">
+<meta property="og:image" content="http://yoursite.com/2018/12/07/Word2vec/Word2vec/08CE7083-6ECC-4F10-98E1-E1188E53F752.png">
+<meta property="og:image" content="http://yoursite.com/2018/12/07/Word2vec/Word2vec/7EAAD550-2CE7-45AB-BDE6-994A676AEEDA.png">
+<meta property="og:updated_time" content="2018-12-07T08:16:35.255Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="word2vec">
+<meta name="twitter:description" content="Word2veclink 词向量 word vectors 训练过程">
+<meta name="twitter:image" content="http://yoursite.com/2018/12/07/Word2vec/Word2vec/C1001E23-C1B0-4F54-827A-F58E400555AE.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/12/07/Word2vec/">
+
+
+
+
+
+  <title>word2vec | 霍俊毅</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">霍俊毅</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Huo Junyi</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/07/Word2vec/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="霍俊毅">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/kitten2.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="霍俊毅">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">word2vec</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-12-07T15:39:13+08:00">
+                2018-12-07
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="Word2vec"><a href="#Word2vec" class="headerlink" title="Word2vec"></a>Word2vec</h1><h2 id="link"><a href="#link" class="headerlink" title="link"></a>link</h2><p> <a href="http://web.stanford.edu/class/cs224n/lectures/lecture2.pdf" target="_blank" rel="noopener">词向量</a></p>
+<h2 id="word-vectors-训练"><a href="#word-vectors-训练" class="headerlink" title="word vectors 训练"></a>word vectors 训练</h2><h3 id="过程"><a href="#过程" class="headerlink" title="过程"></a>过程</h3><p><img src="Word2vec/C1001E23-C1B0-4F54-827A-F58E400555AE.png" alt=""></p>
+<a id="more"></a>
+<p><img src="Word2vec/34563E52-055D-43A2-A1C1-A1842C394061.png" alt=""></p>
+<h3 id="通俗的例子"><a href="#通俗的例子" class="headerlink" title="通俗的例子"></a>通俗的例子</h3><p>每个中心词，窗口=2，我们都要计算以下概率：</p>
+<p><img src="Word2vec/EE1E58F5-2C34-46F1-8FED-6D9CE509A162.png" alt=""></p>
+<p><img src="Word2vec/A96595CB-5A81-426E-9E88-F8FE19B4A394.png" alt=""></p>
+<h3 id="目标函数"><a href="#目标函数" class="headerlink" title="目标函数"></a>目标函数</h3><p>一个句子有T个单词，预测前面m个和后面m个单词，然后根据极大似然把他们乘在一起，估计参数thi。</p>
+<p><img src="Word2vec/4137929D-40C1-4790-A72B-80ADCB5446E7.png" alt=""></p>
+<p>使用对数技巧，将最大化转化成最小化：</p>
+<p><img src="Word2vec/D5A624F7-6533-4BB9-AB66-D51EF837F93B.png" alt=""></p>
+<p>我们如何计算我们的<img src="Word2vec/930DA868-3BF5-48A2-8E03-08744BE55527.png" alt="">:</p>
+<p>使用向量相乘来获得词之间的相似度，再使用softmax来规范化我们的概率。</p>
+<p><strong>注意：</strong>每一个单词都要有两个向量：</p>
+<pre><code>* u_w是为context时的向量
+* v_c是中心词时的向量
+* V 是整个语料的大小，并不是2*m（两倍窗口大小）
+* o ∈ V
+</code></pre><p><img src="Word2vec/B5C7DFF2-EDFF-418B-8001-3EDA6EBF1BDE.png" alt=""></p>
+<h3 id="训练的权重"><a href="#训练的权重" class="headerlink" title="训练的权重"></a>训练的权重</h3><pre><code>* 每个词的两个向量，一个是中心词向量，一个是context向量
+</code></pre><p><img src="Word2vec/6C4BE055-A921-40F4-BB30-CD1412C7BDF4.png" alt=""></p>
+<h3 id="求导细节"><a href="#求导细节" class="headerlink" title="求导细节"></a>求导细节</h3><p><img src="Word2vec/E5EA3AD3-9CC0-4315-BFE8-1129DDEE4096.png" alt=""></p>
+<p>对J求完导后，我们发现我们的gradient 矩阵非常稀疏，因为我们使用SGD，每次只会更新一个窗口的值：</p>
+<p><img src="Word2vec/2DD40E59-F3F9-4C1D-82FE-AC8F52403AB0.png" alt=""></p>
+<h3 id="一些疑问解答"><a href="#一些疑问解答" class="headerlink" title="一些疑问解答"></a>一些疑问解答</h3><p>为什么用one-hot编码词向量不好？</p>
+<p>答：搜索<code>eat food</code>得到<code>eat meat</code>但是<code>food</code>与<code>meat</code>是one-hot编码会相互垂直，不存在相似性，所以很难搜索出来。解决方法：使用邻居的值来估计</p>
+<p>为什么在训练时每个词使用两个向量来表示？</p>
+<p>答：在实际的工程上效果更加好。更加容易收敛</p>
+<p>在实际的应用上是使用context vector还是 center word vector？</p>
+<p>答：使用center word vector</p>
+<p>滑动窗口的词要考虑到位置关系吗？</p>
+<p>答：不需要，实际效果会更好</p>
+<p>为什么度量向量的相似性使用u*v而不用再除以他们的长度？</p>
+<p>答：计算量复杂，实际效果相差不大。</p>
+<p>我们注意到我们的目标函数需要计算语料里的所有词（T个）有可能是十亿量级，怎么解决？</p>
+<p>答：SGD。用一个词来更新所有的词向量</p>
+<p>在skip gram 中的 softmax中的V是指窗口的V还是全部语料的V</p>
+<p>答：是全部语料的V，也就是说V是十亿量级的级别</p>
+<p>那V这么大要怎么解决？</p>
+<p>答：在skip gram中使用negative sampling</p>
+<p>目标函数的凸函数？</p>
+<p>答：不是，为什么？</p>
+<p>向量的内积作为相似性度量，我们可以使用欧几里得距离吗？</p>
+<p>答：内积效果会更加好</p>
+<h2 id="常用的word2vec模型"><a href="#常用的word2vec模型" class="headerlink" title="常用的word2vec模型"></a>常用的word2vec模型</h2><h3 id="使用Skip-gram"><a href="#使用Skip-gram" class="headerlink" title="使用Skip gram"></a>使用Skip gram</h3><pre><code>* V：字典中词数
+* d：每个词的维度
+* one-hot的形式输入
+* 在d x V的大center word matrix中找出对应的v_c
+* d x 1的v_c 跟第一个V x d context word matrix相乘（t - 3位置的权重，假设窗口m = 3）
+* d x 1的v_c 跟第二个V x d context word matrix相乘（t - 2位置的权重）
+* …
+* 最后得到 V x 1的向量，使用softmax来归一化我们的数值
+* 把真实的label输入到目标函数，来计算我们的loss
+</code></pre><p><img src="Word2vec/5B3C779B-121A-41CD-83D9-EF5C4E3ADDBC.png" alt=""></p>
+<h3 id="使用negative-sampling"><a href="#使用negative-sampling" class="headerlink" title="使用negative sampling"></a>使用negative sampling</h3><p>符号说明：</p>
+<pre><code>* 使用sigmoid做数值压缩
+* T超参数，选T个windows做一次更新
+* 根据P(w) 这个概率挑选k个不是共同出现（co-occur）的词作为负采样
+* Z是什么？以后补充？
+* 3/4次方是为了惩罚概率大的词，使得不太容易被抽到，稀罕的词容易被抽到（自己画个根号的函数就知道了）
+* J(theta)是目标函数，前一项两个向量越相似越等于0，后一项两个向量越不相似越不等于0，所以我们maximize J(theta)就会达到目的。
+</code></pre><p><img src="Word2vec/4853B8BC-BEF7-43C7-B63F-CBC57808074D.png" alt=""></p>
+<p><img src="Word2vec/FFCE57C4-A69A-4315-95BD-C7CC54ACDD0B.png" alt=""></p>
+<h3 id="continuous-bag-of-words"><a href="#continuous-bag-of-words" class="headerlink" title="continuous bag of words"></a>continuous bag of words</h3><p>把中心词附近的词向量加起来，然后跟中心词做内积</p>
+<p><img src="Word2vec/BAA9928F-1109-42E1-A1AF-7E549C88097F.png" alt=""></p>
+<h3 id="co-occurrence-matrix"><a href="#co-occurrence-matrix" class="headerlink" title="co-occurrence matrix"></a>co-occurrence matrix</h3><p><img src="Word2vec/E7DE2876-A658-4DBC-885F-6D7001D0422E.png" alt=""></p>
+<p>缺点，矩阵很大：</p>
+<p><img src="Word2vec/3745D1AB-4ABF-41CA-ADFD-AD35FE20AA48.png" alt=""></p>
+<p>解决方法，使用SVD来降维，效果不错：</p>
+<p><img src="Word2vec/C05A1040-5A00-488D-9C21-5B45F5B49332.png" alt=""></p>
+<p><img src="Word2vec/EC0CE93E-4EF0-4792-9B6A-2006A137D541.png" alt=""></p>
+<p>缺点：非常慢O(mn^2)</p>
+<h3 id="count-based-vs-direct-prediction"><a href="#count-based-vs-direct-prediction" class="headerlink" title="count based vs direct prediction"></a>count based vs direct prediction</h3><p><img src="Word2vec/72942C98-2A50-4907-A27C-4AD672E19D10.png" alt=""></p>
+<h3 id="GloVe"><a href="#GloVe" class="headerlink" title="GloVe"></a>GloVe</h3><p>Skip gram每次捕捉一个windows的co-occurrence缺乏全局性。count based model捕捉全部文档的 统计信息，缺乏细节。GloVe将两者结合起来，捕捉全局文档统计信息的同时计算每个统计信息的windows</p>
+<p>过程：</p>
+<p>P是两个词在旁边的次数（counts）</p>
+<p><img src="Word2vec/8AD6B18F-4B28-4F5B-AF51-E0D2080C3825.png" alt=""></p>
+<p><strong>更加具体的过程，在这里留个尾巴，后面再补？？？</strong></p>
+<h2 id="evaluation"><a href="#evaluation" class="headerlink" title="evaluation"></a>evaluation</h2><p>Intrinsic word vector evaluation 公式：</p>
+<p><img src="Word2vec/6AD1E2C4-8285-46B1-9926-C3FCE3CF2F8C.png" alt=""></p>
+<p>主要是捕捉：Syntactic 和 Semantic两种关系 </p>
+<p>效果：</p>
+<p><img src="Word2vec/08CE7083-6ECC-4F10-98E1-E1188E53F752.png" alt=""></p>
+<p>一些超参数设计：</p>
+<p>Assymmetric是窗口只要一边时的情况，symmetric是两边都有窗口的情况</p>
+<p><img src="Word2vec/7EAAD550-2CE7-45AB-BDE6-994A676AEEDA.png" alt=""></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/nlp/" rel="tag"># nlp</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/12/07/使用jacobians求导/" rel="next" title="useful jacobians equations">
+                <i class="fa fa-chevron-left"></i> useful jacobians equations
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="/images/kitten2.jpg" alt="霍俊毅">
+          <p class="site-author-name" itemprop="name">霍俊毅</p>
+           
+              <p class="site-description motion-element" itemprop="description">霍俊毅's blog</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">4</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://cn.linkedin.com/in/%E4%BF%8A%E6%AF%85-%E9%9C%8D-605041109" target="_blank" title="Linkedin">
+                  
+                    <i class="fa fa-fw fa-linkedin"></i>
+                  
+                    
+                      Linkedin
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/JyiHUO" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                    
+                      GitHub
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/bissbiss/activities" target="_blank" title="知乎">
+                  
+                    <i class="fa fa-fw fa-book"></i>
+                  
+                    
+                      知乎
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://stackoverflow.com/users/6080827/rachel-jennifer" target="_blank" title="StackOverflow">
+                  
+                    <i class="fa fa-fw fa-stack-overflow"></i>
+                  
+                    
+                      StackOverflow
+                    
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Word2vec"><span class="nav-number">1.</span> <span class="nav-text">Word2vec</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#link"><span class="nav-number">1.1.</span> <span class="nav-text">link</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#word-vectors-训练"><span class="nav-number">1.2.</span> <span class="nav-text">word vectors 训练</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#过程"><span class="nav-number">1.2.1.</span> <span class="nav-text">过程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#通俗的例子"><span class="nav-number">1.2.2.</span> <span class="nav-text">通俗的例子</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#目标函数"><span class="nav-number">1.2.3.</span> <span class="nav-text">目标函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#训练的权重"><span class="nav-number">1.2.4.</span> <span class="nav-text">训练的权重</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#求导细节"><span class="nav-number">1.2.5.</span> <span class="nav-text">求导细节</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#一些疑问解答"><span class="nav-number">1.2.6.</span> <span class="nav-text">一些疑问解答</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#常用的word2vec模型"><span class="nav-number">1.3.</span> <span class="nav-text">常用的word2vec模型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#使用Skip-gram"><span class="nav-number">1.3.1.</span> <span class="nav-text">使用Skip gram</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用negative-sampling"><span class="nav-number">1.3.2.</span> <span class="nav-text">使用negative sampling</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#continuous-bag-of-words"><span class="nav-number">1.3.3.</span> <span class="nav-text">continuous bag of words</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#co-occurrence-matrix"><span class="nav-number">1.3.4.</span> <span class="nav-text">co-occurrence matrix</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#count-based-vs-direct-prediction"><span class="nav-number">1.3.5.</span> <span class="nav-text">count based vs direct prediction</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#GloVe"><span class="nav-number">1.3.6.</span> <span class="nav-text">GloVe</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#evaluation"><span class="nav-number">1.4.</span> <span class="nav-text">evaluation</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">霍俊毅</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.2"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
