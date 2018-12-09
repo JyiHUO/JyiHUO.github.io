@@ -333,7 +333,7 @@
 
       
         
-          <h2 id="1-softmax"><a href="#1-softmax" class="headerlink" title="1.softmax"></a>1.softmax</h2><h3 id="a"><a href="#a" class="headerlink" title="(a)"></a>(a)</h3><p>$$$<br>softmax(x + c) = \frac{e^{x_i+c}}{\sum_j e^{x_i+c}} = \frac{e^{x_i}e^c}{e^c\sum e^{x_i}} = softmax(x)<br>$$$</p>
+          <h2 id="1-softmax"><a href="#1-softmax" class="headerlink" title="1.softmax"></a>1.softmax</h2><h3 id="a"><a href="#a" class="headerlink" title="(a)"></a>(a)</h3><p>$$<br>softmax(x + c) = \frac{e^{x_i+c}}{\sum_j e^{x_i+c}} = \frac{e^{x_i}e^c}{e^c\sum e^{x_i}} = softmax(x)<br>$$</p>
 <p>这个技巧在代码编写非常常用，我们一般会令$c = -max\ x$来避免整数溢出</p>
           <!--noindex-->
           <div class="post-button text-center">
