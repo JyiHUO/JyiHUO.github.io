@@ -103,7 +103,7 @@
 <meta property="og:description" content="1.softmax(a)$$softmax(x + c) = \frac{e^{x_i+c}}{\sum_j e^{x_i+c}} = \frac{e^{x_i}e^c}{e^c\sum e^{x_i}} = softmax(x)$$ 这个技巧在代码编写非常常用，我们一般会令$c = -max\ x$来避免整数溢出">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://yoursite.com/2018/12/09/ass1-answer/ass1-answer/b.png">
-<meta property="og:updated_time" content="2018-12-09T13:57:14.096Z">
+<meta property="og:updated_time" content="2018-12-17T02:20:43.069Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="cs224n assignment1 answer">
 <meta name="twitter:description" content="1.softmax(a)$$softmax(x + c) = \frac{e^{x_i+c}}{\sum_j e^{x_i+c}} = \frac{e^{x_i}e^c}{e^c\sum e^{x_i}} = softmax(x)$$ 这个技巧在代码编写非常常用，我们一般会令$c = -max\ x$来避免整数溢出">
@@ -390,14 +390,15 @@
 <p>$$<br>\frac{\partial J_{skip-gram}(w_{t-m…t+m})}{\partial U} = \sum_{-m\leq j \leq m,j\neq0} \frac{\partial F(w_{t+j}, v_c)}{\partial U}<br>$$</p>
 <p>$$<br>\frac{\partial J_{CBOW}(w_{c-m…c+m})}{\partial U} = \frac{\partial F(w_t, \hat{v})}{\partial U}<br>$$</p>
 <p>$$<br>\frac{\partial J_{CBOW}(w_{c-m…c+m})}{\partial U} = \frac{\partial F(w_t, \hat{v})}{\partial v_{w_t + j}} \quad j\in{-m…-1,1…m}<br>$$</p>
-<h3 id="e-1"><a href="#e-1" class="headerlink" title="(e)"></a>(e)</h3><p>对矩阵进行normalize，注意这里的normalization不同表格结构化数据的normalization。因为我们词向量的初始化是<br>根据一个分布（正太或标准正太）来初始化的，所以一个词向量上的每个feature都有相同的单位(unit)，我们不需要再进行standardlization。</p>
+<h3 id="e-1"><a href="#e-1" class="headerlink" title="(e)"></a>(e)</h3><h4 id="normalize"><a href="#normalize" class="headerlink" title="normalize"></a>normalize</h4><p>对矩阵进行normalize，注意这里的normalization不同表格结构化数据的normalization。因为我们词向量的初始化是<br>根据一个分布（正太或标准正太）来初始化的，所以一个词向量上的每个feature都有相同的单位(unit)，我们不需要再进行standardlization。</p>
 <p>我们使用范数来规范化我们的数据，因为后面我们使用$u^Tv$来度量两个向量的相似性，而不是$cos(\theta) = \frac{u^Tv}{|u||v|}$，去掉分母能够减少我们的计算量，尽可能保持分母为1就要确保我们向量的初始化为1，所以在初始化时我们会除以向量的范数，下面给出相关公式：</p>
 <p>notation:<br>$$<br>\text{V is the length of vocaburary}\\<br>\text{D is the number of features of each word vector}\\<br>\text{N is the number of samples}\\<br>\text{M is the number of dimentions}\\<br>$$</p>
 <p>$$<br>U \in R^{V \times D}\\<br>data \in R^{N \times M}\\<br>$$</p>
 <p>$$<br>norm_2(U) = \frac{U_{ij}}{\sqrt{(\sum_{j=1}^D U_{ij}^2}}<br>\quad i = 1…V\\<br>$$</p>
 <p>$$<br>stdardlize(data) = \frac{data_{ij} - \mu_j}{\sigma_j}<br>\quad i= 1…N<br>\quad j = 1…M\\<br>\mu_j = \frac{\sum_{i=1}^N data_{ij}}{N}<br>\quad j = 1…M<br>$$<br>$$<br>\sigma_j =\sqrt{ \frac{\sum_{i=1}^{N} data_{ij} - \mu_j}{N}}<br>\quad j=1…M<br>$$</p>
 <p>代码编写：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#norm U</span></span><br><span class="line">U /= np.sqrt(np.sum(np.square(U), axis=<span class="number">1</span>, keepdims=<span class="keyword">True</span>))</span><br><span class="line"><span class="comment"># standardlize data</span></span><br><span class="line"><span class="keyword">from</span> sklearn <span class="keyword">import</span> preprocessing</span><br><span class="line">data_scaled = preprocessing.scale(data)</span><br></pre></td></tr></table></figure></p>
-
+<h4 id="cbow-vs-skip-gram"><a href="#cbow-vs-skip-gram" class="headerlink" title="cbow vs skip-gram"></a>cbow vs skip-gram</h4><p>先介绍skip-gram吧，它理解起来比cbow容易多了</p>
+<h2 id="4-Sentiment-Analysis"><a href="#4-Sentiment-Analysis" class="headerlink" title="4.Sentiment Analysis"></a>4.Sentiment Analysis</h2>
       
     </div>
     
@@ -436,6 +437,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/12/15/adaboost/" rel="prev" title="adaboost">
+                adaboost <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -517,7 +522,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">6</span>
+                <span class="site-state-item-count">7</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -530,7 +535,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">4</span>
+                <span class="site-state-item-count">5</span>
                 <span class="site-state-item-name">标签</span>
               </a>
             </div>
@@ -611,7 +616,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-softmax"><span class="nav-number">1.</span> <span class="nav-text">1.softmax</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#a"><span class="nav-number">1.1.</span> <span class="nav-text">(a)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#b"><span class="nav-number">1.2.</span> <span class="nav-text">(b)</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-Neural-Network-Basic"><span class="nav-number">2.</span> <span class="nav-text">2.Neural Network Basic</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#a-1"><span class="nav-number">2.1.</span> <span class="nav-text">(a)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#b-1"><span class="nav-number">2.2.</span> <span class="nav-text">(b)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#c"><span class="nav-number">2.3.</span> <span class="nav-text">(c)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#d"><span class="nav-number">2.4.</span> <span class="nav-text">(d)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#e"><span class="nav-number">2.5.</span> <span class="nav-text">(e)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#f"><span class="nav-number">2.6.</span> <span class="nav-text">(f)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#g"><span class="nav-number">2.7.</span> <span class="nav-text">(g)</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-word2vec"><span class="nav-number">3.</span> <span class="nav-text">3.word2vec</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#a-2"><span class="nav-number">3.1.</span> <span class="nav-text">(a)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#b-2"><span class="nav-number">3.2.</span> <span class="nav-text">(b)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#c-1"><span class="nav-number">3.3.</span> <span class="nav-text">(c)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#d-1"><span class="nav-number">3.4.</span> <span class="nav-text">(d)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#e-1"><span class="nav-number">3.5.</span> <span class="nav-text">(e)</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-softmax"><span class="nav-number">1.</span> <span class="nav-text">1.softmax</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#a"><span class="nav-number">1.1.</span> <span class="nav-text">(a)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#b"><span class="nav-number">1.2.</span> <span class="nav-text">(b)</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-Neural-Network-Basic"><span class="nav-number">2.</span> <span class="nav-text">2.Neural Network Basic</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#a-1"><span class="nav-number">2.1.</span> <span class="nav-text">(a)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#b-1"><span class="nav-number">2.2.</span> <span class="nav-text">(b)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#c"><span class="nav-number">2.3.</span> <span class="nav-text">(c)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#d"><span class="nav-number">2.4.</span> <span class="nav-text">(d)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#e"><span class="nav-number">2.5.</span> <span class="nav-text">(e)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#f"><span class="nav-number">2.6.</span> <span class="nav-text">(f)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#g"><span class="nav-number">2.7.</span> <span class="nav-text">(g)</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-word2vec"><span class="nav-number">3.</span> <span class="nav-text">3.word2vec</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#a-2"><span class="nav-number">3.1.</span> <span class="nav-text">(a)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#b-2"><span class="nav-number">3.2.</span> <span class="nav-text">(b)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#c-1"><span class="nav-number">3.3.</span> <span class="nav-text">(c)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#d-1"><span class="nav-number">3.4.</span> <span class="nav-text">(d)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#e-1"><span class="nav-number">3.5.</span> <span class="nav-text">(e)</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#normalize"><span class="nav-number">3.5.1.</span> <span class="nav-text">normalize</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#cbow-vs-skip-gram"><span class="nav-number">3.5.2.</span> <span class="nav-text">cbow vs skip-gram</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-Sentiment-Analysis"><span class="nav-number">4.</span> <span class="nav-text">4.Sentiment Analysis</span></a></li></ol></div>
             
 
           </div>
