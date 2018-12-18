@@ -1,0 +1,947 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.2" rel="stylesheet" type="text/css">
+
+
+  <meta name="keywords" content="machine learning,">
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.2">
+
+
+
+
+
+
+<meta name="description" content="什么是CCA典型关联分析(Canonical Correlation Analysis，以下简称CCA)是最常用的挖掘数据关联关系的算法之一。比如我们拿到两组数据，第一组是人身高和体重的数据，第二组是对应的跑步能力和跳远能力的数据。那么我们能不能说这两组数据是相关的呢？CCA可以帮助我们分析这个问题。将数据形式不同的矩阵映射成向量，从而可以比较他们之间的相关系数。多用在信息的检索">
+<meta name="keywords" content="machine learning">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Canonical Correlation Analysis">
+<meta property="og:url" content="http://yoursite.com/2018/12/18/Canonical-Correlation-Analysis/index.html">
+<meta property="og:site_name" content="霍俊毅">
+<meta property="og:description" content="什么是CCA典型关联分析(Canonical Correlation Analysis，以下简称CCA)是最常用的挖掘数据关联关系的算法之一。比如我们拿到两组数据，第一组是人身高和体重的数据，第二组是对应的跑步能力和跳远能力的数据。那么我们能不能说这两组数据是相关的呢？CCA可以帮助我们分析这个问题。将数据形式不同的矩阵映射成向量，从而可以比较他们之间的相关系数。多用在信息的检索">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-12-18T02:52:00.365Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Canonical Correlation Analysis">
+<meta name="twitter:description" content="什么是CCA典型关联分析(Canonical Correlation Analysis，以下简称CCA)是最常用的挖掘数据关联关系的算法之一。比如我们拿到两组数据，第一组是人身高和体重的数据，第二组是对应的跑步能力和跳远能力的数据。那么我们能不能说这两组数据是相关的呢？CCA可以帮助我们分析这个问题。将数据形式不同的矩阵映射成向量，从而可以比较他们之间的相关系数。多用在信息的检索">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/12/18/Canonical-Correlation-Analysis/">
+
+
+
+
+
+  <title>Canonical Correlation Analysis | 霍俊毅</title><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <!-- hexo-inject:begin --><!-- hexo-inject:end --><div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">霍俊毅</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">Huo Junyi</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/18/Canonical-Correlation-Analysis/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="霍俊毅">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/kitten2.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="霍俊毅">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Canonical Correlation Analysis</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-12-18T10:50:29+08:00">
+                2018-12-18
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a href="/2018/12/18/Canonical-Correlation-Analysis/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2018/12/18/Canonical-Correlation-Analysis/" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+             <span id="/2018/12/18/Canonical-Correlation-Analysis/" class="leancloud_visitors" data-flag-title="Canonical Correlation Analysis">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="什么是CCA"><a href="#什么是CCA" class="headerlink" title="什么是CCA"></a>什么是CCA</h1><p>典型关联分析(Canonical Correlation Analysis，以下简称CCA)是最常用的挖掘数据关联关系的算法之一。比如我们拿到两组数据，第一组是人身高和体重的数据，第二组是对应的跑步能力和跳远能力的数据。那么我们能不能说这两组数据是相关的呢？CCA可以帮助我们分析这个问题。将数据形式不同的矩阵映射成向量，从而可以比较他们之间的相关系数。多用在信息的检索</p>
+<a id="more"></a>
+<h1 id="CCA推导"><a href="#CCA推导" class="headerlink" title="CCA推导"></a>CCA推导</h1><p>首先我们有两份数据$X (N, C1)$ 和 $Y (N, C2)$，注意我们的数据要先进行标准化</p>
+<p>使用权重$a(C1, 1)$和$b(C2, 1)$对$X$和$Y$做线性变化$X’ = Xa$，$Y’ = Yb$</p>
+<p>计算得到我们的相关系数，并且要最大化我们的相关系数，问题可描述成：</p>
+<p>$$<br>\underset{a, b}{\operatorname{argmax}} \frac{cov(X’, Y’)}{\sqrt{Var(X’)} \sqrt{Var(Y’)}}<br>$$</p>
+<p>进行展开，注意X和Y的均值为0：<br>$$<br>cov(X’, Y’) = E[[Xa - E(Xa)]^T [Yb - E(Yb)]] = E[a^TX^TYb] = a^TE[X^TY]b<br>$$</p>
+<p>$$<br>Var(X’) = Var(Xa) = a^TE[X^TX]a<br>$$</p>
+<p>$$<br>Var(Y’) = Var(Ya) = b^TE[Y^TY]b<br>$$</p>
+<p>代入原式子可化成：</p>
+<p>$$<br>\underset{a, b}{\operatorname{argmax}} \frac{a^TE[X^TY]b}{\sqrt{a^TE[X^TX]a} \sqrt{b^TE[Y^TY]b}}<br>$$</p>
+<p>对于这个最优化问题，我们发现a和b增大相同的倍数最优化的值不改变，所以我们需要应用svm的技巧，固定分母，只优化分子，原问题可变成：</p>
+<p>$$<br>\underset{a, b}{\operatorname{argmax}} a^TE[X^TY]b<br>$$</p>
+<p>$$<br>s.t. \quad a^TE[X^TX]a = 1 \quad b^TE[Y^TY]b = 1<br>$$</p>
+<p>使用小技巧来把数学期望转成协方差矩阵，方便我们的计算：</p>
+<p>$$<br>E(X^T Y) = E(X^T Y) - E(X)E(Y) = cov(X, Y) = S_{xy}<br>$$</p>
+<p>$$<br>E(X^T X) = E(X^T X) - E(X)E(X) = cov(X, X) = S_{xx}<br>$$</p>
+<p>$$<br>E(Y^T Y) = E(Y^T Y) - E(Y)E(Y) = cov(Y, Y) = S_{yy}<br>$$</p>
+<p>代入后:</p>
+<p>$$<br>\underset{a, b}{\operatorname{argmax}} a^TS_{xy}b<br>$$</p>
+<p>$$<br>s.t. \quad a^TS_{xx}a = 1 \quad b^TS_{yy}b = 1<br>$$</p>
+<p>我们仔细观察后，发现可以再用一个更大的trick，令$a = S_{xx}^{-\frac{1}{2}} u$ 和$b = S_{yy}^{-\frac{1}{2}}v$，其中u(C1, 1),v(C2, 1)那么原式子可变成：</p>
+<p>$$<br>\underset{a, b}{\operatorname{argmax}} u^T S_{xx}^{-\frac{1}{2}T} S_{xy} S_{yy}^{-\frac{1}{2}}v<br>$$</p>
+<p>$$<br>s.t. \quad u^Tu = 1 \quad v^Tv = 1<br>$$</p>
+<p>这个时候你发现中间那三个S是不是可以用SVD，没错是的，你的直觉很准确，就是要使用SVD来把三个S变成另外三个矩阵：</p>
+<p>$$<br>S_{xx}^{-\frac{1}{2}T} S_{xy} S_{yy}^{-\frac{1}{2}} = U \sum V<br>$$</p>
+<p>其中$U^TU = I$和$VV^T = I$，U的每一列都是标准正交基，V的每一行都是标准正交基，也就是说U里面的每一列只有它自己的內积为1其他为0，接下来我们自己观察下面这个式子：</p>
+<p>$$<br>\underset{a, b}{\operatorname{argmax}} u^T U \sum Vv<br>$$</p>
+<p>在这里u是基向量，U里面的每一列都是基向量（而且相互正交），在这里我直接给出我的直觉，后面复习完线性代数再证明吧：U里面只有一个列向量跟u的内积为1其他的内积为0。所以u^TU是一个one-hot向量（v也是同样的意思）。所以该问题变成找到$\sum$最大的特征值。</p>
+<h1 id="CCA算法流程"><a href="#CCA算法流程" class="headerlink" title="CCA算法流程"></a>CCA算法流程</h1><p>输入：X和Y数据(N,C)的形式</p>
+<p>输出：权重a和b</p>
+<p>对输出的数据进行标准化</p>
+<p>计算X的方差$S_{xx}$，计算y的方差$S_{yy}$，计算X与Y的协方差$S_{xy}$</p>
+<p>使用svd求到: $S_{xx}^{-\frac{1}{2}T} S_{xy} S_{yy}^{-\frac{1}{2}} = U \sum V$</p>
+<p>找到最大特征值和对应的特征向量u和v，并计算出a和b：$a = S_{xx}^{-\frac{1}{2}} u$ 和$b = S_{yy}^{-\frac{1}{2}}v$</p>
+<h1 id="CCA代码实现"><a href="#CCA代码实现" class="headerlink" title="CCA代码实现"></a>CCA代码实现</h1><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">from</span> scipy <span class="keyword">import</span> linalg</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">CCA</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></span><br><span class="line">        self.a = <span class="keyword">None</span></span><br><span class="line">        self.b = <span class="keyword">None</span></span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">train</span><span class="params">(self, X, Y)</span>:</span></span><br><span class="line">        Nx, cx = X.shape</span><br><span class="line">        Ny, cy = Y.shape</span><br><span class="line">        </span><br><span class="line">        <span class="comment"># 标准化 (N, C)</span></span><br><span class="line">        X = (X - np.mean(X, <span class="number">0</span>)) / np.std(X, <span class="number">0</span>)</span><br><span class="line">        Y = (Y - np.mean(Y, <span class="number">0</span>)) / np.std(Y, <span class="number">0</span>)</span><br><span class="line">        </span><br><span class="line">        <span class="comment"># 求三个S</span></span><br><span class="line">        data = np.concatenate([X, Y], axis = <span class="number">1</span>)</span><br><span class="line">        cov = np.cov(data, rowvar=<span class="keyword">False</span>)</span><br><span class="line">        N, C = cov.shape</span><br><span class="line">        Sxx = cov[<span class="number">0</span>:cx, <span class="number">0</span>:cx]</span><br><span class="line">        Syy = cov[cy:C, cy:C]</span><br><span class="line">        Sxy = cov[<span class="number">0</span>:cx, cy:C]</span><br><span class="line">        Sxx_ = linalg.sqrtm(np.linalg.inv(Sxx))</span><br><span class="line">        Syy_ = linalg.sqrtm(np.linalg.inv(Syy))</span><br><span class="line">        M = Sxx_.T.dot(Sxy.dot(Syy_))</span><br><span class="line">        U, S, V = np.linalg.svd(M, full_matrices=<span class="keyword">False</span>)</span><br><span class="line">        u = U[:, <span class="number">0</span>]</span><br><span class="line">        v = V[<span class="number">0</span>, :]</span><br><span class="line">        self.a = Sxx_.dot(u)</span><br><span class="line">        self.b = Syy_.dot(v)</span><br><span class="line">        </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">predict</span><span class="params">(self, X, Y)</span>:</span></span><br><span class="line">        X_ = X.dot(self.a)</span><br><span class="line">        Y_ = Y.dot(self.b)</span><br><span class="line">        <span class="keyword">return</span> X_, Y_</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">cal_corrcoef</span><span class="params">(self, X, Y)</span>:</span></span><br><span class="line">        X_, Y_ = self.predict(X, Y)</span><br><span class="line">        <span class="keyword">return</span> np.corrcoef(X_, Y_)[<span class="number">0</span>,<span class="number">1</span>]</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># test</span></span><br><span class="line">n = <span class="number">500</span></span><br><span class="line"><span class="comment"># 2 latents vars:</span></span><br><span class="line">l1 = np.random.normal(size=n)</span><br><span class="line">l2 = np.random.normal(size=n)</span><br><span class="line"></span><br><span class="line">latents = np.array([l1, l1, l2, l2]).T</span><br><span class="line">X = latents + np.random.normal(size=<span class="number">4</span> * n).reshape((n, <span class="number">4</span>))</span><br><span class="line">Y = latents + np.random.normal(size=<span class="number">4</span> * n).reshape((n, <span class="number">4</span>))</span><br><span class="line"></span><br><span class="line">X_train = X[:n // <span class="number">2</span>]</span><br><span class="line">Y_train = Y[:n // <span class="number">2</span>]</span><br><span class="line">X_test = X[n // <span class="number">2</span>:]</span><br><span class="line">Y_test = Y[n // <span class="number">2</span>:]</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">print</span> (X_train.shape)</span><br></pre></td></tr></table></figure>
+<pre><code>(250, 4)
+</code></pre><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># my cca</span></span><br><span class="line">clf = CCA()</span><br><span class="line">clf.train(X_train, Y_train)</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">print</span> (clf.cal_corrcoef(X_train, Y_train))</span><br><span class="line"><span class="keyword">print</span> (clf.cal_corrcoef(X_test, Y_test))</span><br></pre></td></tr></table></figure>
+<pre><code>0.7200173442101319
+0.671638992091987
+</code></pre><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># compare with sklearn</span></span><br><span class="line"><span class="keyword">from</span> sklearn.cross_decomposition <span class="keyword">import</span> CCA</span><br><span class="line">cca_sklearn = CCA(n_components=<span class="number">1</span>)</span><br><span class="line">cca_sklearn.fit(X_train, Y_train)</span><br><span class="line">X_c, Y_c = cca_sklearn.transform(X_train, Y_train)</span><br><span class="line">X_c_, Y_c_ = cca_sklearn.transform(X_test, Y_test)</span><br><span class="line"><span class="keyword">print</span> (np.corrcoef(X_c[:,<span class="number">0</span>], Y_c[:, <span class="number">0</span>])[<span class="number">0</span>,<span class="number">1</span>])</span><br><span class="line"><span class="keyword">print</span> (np.corrcoef(X_c_[:, <span class="number">0</span>], Y_c_[:, <span class="number">0</span>])[<span class="number">0</span>,<span class="number">1</span>])</span><br></pre></td></tr></table></figure>
+<pre><code>0.7202109376634042
+0.6719982185448227
+</code></pre><p>完美：精读差别不大</p>
+<h1 id="CCA缺点"><a href="#CCA缺点" class="headerlink" title="CCA缺点"></a>CCA缺点</h1><p>需要计算svd，逆矩阵还有平方根矩阵，非常耗时，只能处理线性的情况。</p>
+<h1 id="deep-cca"><a href="#deep-cca" class="headerlink" title="deep cca"></a>deep cca</h1><h1 id="reference"><a href="#reference" class="headerlink" title="reference"></a>reference</h1><p><a href="http://www.cnblogs.com/pinard/p/6288716.html" target="_blank" rel="noopener">link</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/machine-learning/" rel="tag"># machine learning</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/12/18/logistic-regression/" rel="next" title="logistic regression">
+                <i class="fa fa-chevron-left"></i> logistic regression
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>
+          Please enable JavaScript to view the
+          <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image" src="/images/kitten2.jpg" alt="霍俊毅">
+          <p class="site-author-name" itemprop="name">霍俊毅</p>
+           
+              <p class="site-description motion-element" itemprop="description">霍俊毅's blog</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">9</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+            
+              <span class="links-of-author-item">
+                <a href="https://cn.linkedin.com/in/%E4%BF%8A%E6%AF%85-%E9%9C%8D-605041109" target="_blank" title="Linkedin">
+                  
+                    <i class="fa fa-fw fa-linkedin"></i>
+                  
+                    
+                      Linkedin
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://github.com/JyiHUO" target="_blank" title="GitHub">
+                  
+                    <i class="fa fa-fw fa-github"></i>
+                  
+                    
+                      GitHub
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://www.zhihu.com/people/bissbiss/activities" target="_blank" title="知乎">
+                  
+                    <i class="fa fa-fw fa-book"></i>
+                  
+                    
+                      知乎
+                    
+                </a>
+              </span>
+            
+              <span class="links-of-author-item">
+                <a href="https://stackoverflow.com/users/6080827/rachel-jennifer" target="_blank" title="StackOverflow">
+                  
+                    <i class="fa fa-fw fa-stack-overflow"></i>
+                  
+                    
+                      StackOverflow
+                    
+                </a>
+              </span>
+            
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#什么是CCA"><span class="nav-number">1.</span> <span class="nav-text">什么是CCA</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#CCA推导"><span class="nav-number">2.</span> <span class="nav-text">CCA推导</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#CCA算法流程"><span class="nav-number">3.</span> <span class="nav-text">CCA算法流程</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#CCA代码实现"><span class="nav-number">4.</span> <span class="nav-text">CCA代码实现</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#CCA缺点"><span class="nav-number">5.</span> <span class="nav-text">CCA缺点</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#deep-cca"><span class="nav-number">6.</span> <span class="nav-text">deep cca</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#reference"><span class="nav-number">7.</span> <span class="nav-text">reference</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">霍俊毅</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Pisces
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.2"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.2"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.2"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.2"></script>
+
+
+
+  
+
+
+  
+
+    
+      <script id="dsq-count-scr" src="https://huojunyi.disqus.com/count.js" async></script>
+    
+
+    
+      <script type="text/javascript">
+        var disqus_config = function () {
+          this.page.url = 'http://yoursite.com/2018/12/18/Canonical-Correlation-Analysis/';
+          this.page.identifier = '2018/12/18/Canonical-Correlation-Analysis/';
+          this.page.title = 'Canonical Correlation Analysis';
+        };
+        var d = document, s = d.createElement('script');
+        s.src = 'https://huojunyi.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', '' + +new Date());
+        (d.head || d.body).appendChild(s);
+      </script>
+    
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.4.js"></script>
+  <script>AV.initialize("cwbL3KxL2nst7Jjbij5Ap50x-gzGzoHsz", "8vYasv6zVkxozxXvPToD1XrX");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+  
+
+
+  
+
+  
+
+</body>
+</html>
