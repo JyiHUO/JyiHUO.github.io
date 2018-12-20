@@ -104,7 +104,7 @@
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://yoursite.com/2018/12/15/adaboost/adaboost/e.png">
 <meta property="og:image" content="http://yoursite.com/2018/12/15/adaboost/adaboost/a.png">
-<meta property="og:updated_time" content="2018-12-17T02:24:40.197Z">
+<meta property="og:updated_time" content="2018-12-20T01:41:44.874Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="adaboost">
 <meta name="twitter:description" content="目的本人面过腾讯和头条的算法岗，可能是因为我简历上写了：使用过adaboost算法模型，所以无论是一面还是二面都被面试官问到有关adaboost算法原理的相关问题，而且变态的头条面试官居然还问到：为什么增加弱分类器，模型的效果变好？我当时是被问得一脸懵逼，所以写下这篇blog来梳理adaboost的相关知识点，本篇blog主要围绕三个点展开：  以前向分布算法的角度理解adaboost 为什么增加">
@@ -373,8 +373,7 @@
 <p>我们整个目标函数是（注意$y_i \in {-1, 1}$）：<br>$$<br>L(\alpha, G) = \sum_i^N e^{-y_iG(x_i)}<br>$$</p>
 <p>我们先直观地感受一下这个目标函数，当$y_i = G(x_i)$比较多时，L的值慢慢减少，当分类器错误率高时，$y_iG(x_i) = 0$的值就多，L的值慢慢增大。但是我们发现优化这个公式太困难了，我们有一堆$\alpha$和一堆小$g$，所以我们使用加法模型中的特例，前向分步来计算：每次只优化新加进来的权重还有分类器：<br>$$<br>L(\alpha_m,g_m) = \sum_i^N e^{- y_i(G_{m-1}(x_i) + \alpha_mg_m(x_i))} \tag{2}<br>$$</p>
 <p>令$e^{-y_iG_{m-1}(x_i)} = w_{m-1,i}$，这个在我们优化时是固定的，原式子等于：<br>$$<br>\begin{align}<br>L(\alpha_m, g_m) =&amp; \sum_i^N w_{m-1,i}e^{-y_i\alpha_mg_m(x_i)}\\<br>=&amp; \sum_{y_i = g_m(x_i)} w_{m-1,i} e^{\alpha_m} + \sum_{y_i \neq g_m(x_i)} w_{m-1,i} e^{-\alpha_m} \\<br>\end{align}<br>$$</p>
-<p>以上这个式子不利于我们求导，我们使用指示函数$I$来简化我们的函数：<br>$$</p>
-<p>L(\alpha_m, g_m) = e^{\alpha_m} \sum_i^N w_{m-1,i}I(y_i = g_m(x_i)) + e^{-\alpha_m} \sum_i^Nw_{m-1,i}I(y_i \neq g_m(x_i)) \tag{3}<br>$$</p>
+<p>以上这个式子不利于我们求导，我们使用指示函数$I$来简化我们的函数：<br>$$<br>L(\alpha_m, g_m) = e^{\alpha_m} \sum_i^N w_{m-1,i}I(y_i = g_m(x_i)) + e^{-\alpha_m} \sum_i^Nw_{m-1,i}I(y_i \neq g_m(x_i)) \tag{3}<br>$$</p>
 <p>我们仔细观察（2）式子，不难发现是个单调函数，所以说如果求出该函数的极值点，则必为极大值或者极小值，对式子（3）求偏导数，且令其等于0：</p>
 <p>$$<br>\begin{align}<br>0 =&amp; e^{\alpha_m} \sum_i^N w_{m-1,i}I(y_i = g_m(x_i)) + e^{-\alpha_m} \sum_i^Nw_{m-1,i}I(y_i \neq g_m(x_i))\\<br>\alpha_m =&amp; \frac{1}{2}ln \frac{\sum_i^N w_{m-1,i}I(y_i = g_m(x_i))}{\sum_i^Nw_{m-1,i}I(y_i \neq g_m(x_i))} \tag{4}<br>\end{align}<br>$$</p>
 <p>令$e_{m} = \frac{\sum_i^Nw_{m-1,i}I(y_i \neq g_m(x_i))}{\sum_i^N w_{m-1,i}}$，我们称$e$为错误量，可以简化式子（4）：<br>$$<br>a_m = \frac{1}{2}ln\frac{1 - e_{m}}{e_{m}}<br>$$</p>
