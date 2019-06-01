@@ -102,7 +102,7 @@
 <meta property="og:site_name" content="霍俊毅">
 <meta property="og:description" content="什么是CCA典型关联分析(Canonical Correlation Analysis，以下简称CCA)是最常用的挖掘数据关联关系的算法之一。比如我们拿到两组数据，第一组是人身高和体重的数据，第二组是对应的跑步能力和跳远能力的数据。那么我们能不能说这两组数据是相关的呢？CCA可以帮助我们分析这个问题。将数据形式不同的矩阵映射成向量，从而可以比较他们之间的相关系数。多用在信息的检索">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-12-18T02:52:00.365Z">
+<meta property="og:updated_time" content="2019-06-01T02:25:34.359Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Canonical Correlation Analysis">
 <meta name="twitter:description" content="什么是CCA典型关联分析(Canonical Correlation Analysis，以下简称CCA)是最常用的挖掘数据关联关系的算法之一。比如我们拿到两组数据，第一组是人身高和体重的数据，第二组是对应的跑步能力和跳远能力的数据。那么我们能不能说这两组数据是相关的呢？CCA可以帮助我们分析这个问题。将数据形式不同的矩阵映射成向量，从而可以比较他们之间的相关系数。多用在信息的检索">
@@ -387,7 +387,7 @@
 <p>使用svd求到: $S_{xx}^{-\frac{1}{2}T} S_{xy} S_{yy}^{-\frac{1}{2}} = U \sum V$</p>
 <p>找到最大特征值和对应的特征向量u和v，并计算出a和b：$a = S_{xx}^{-\frac{1}{2}} u$ 和$b = S_{yy}^{-\frac{1}{2}}v$</p>
 <h1 id="CCA代码实现"><a href="#CCA代码实现" class="headerlink" title="CCA代码实现"></a>CCA代码实现</h1><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> numpy <span class="keyword">as</span> np</span><br><span class="line"><span class="keyword">from</span> scipy <span class="keyword">import</span> linalg</span><br></pre></td></tr></table></figure>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">CCA</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></span><br><span class="line">        self.a = <span class="keyword">None</span></span><br><span class="line">        self.b = <span class="keyword">None</span></span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">train</span><span class="params">(self, X, Y)</span>:</span></span><br><span class="line">        Nx, cx = X.shape</span><br><span class="line">        Ny, cy = Y.shape</span><br><span class="line">        </span><br><span class="line">        <span class="comment"># 标准化 (N, C)</span></span><br><span class="line">        X = (X - np.mean(X, <span class="number">0</span>)) / np.std(X, <span class="number">0</span>)</span><br><span class="line">        Y = (Y - np.mean(Y, <span class="number">0</span>)) / np.std(Y, <span class="number">0</span>)</span><br><span class="line">        </span><br><span class="line">        <span class="comment"># 求三个S</span></span><br><span class="line">        data = np.concatenate([X, Y], axis = <span class="number">1</span>)</span><br><span class="line">        cov = np.cov(data, rowvar=<span class="keyword">False</span>)</span><br><span class="line">        N, C = cov.shape</span><br><span class="line">        Sxx = cov[<span class="number">0</span>:cx, <span class="number">0</span>:cx]</span><br><span class="line">        Syy = cov[cy:C, cy:C]</span><br><span class="line">        Sxy = cov[<span class="number">0</span>:cx, cy:C]</span><br><span class="line">        Sxx_ = linalg.sqrtm(np.linalg.inv(Sxx))</span><br><span class="line">        Syy_ = linalg.sqrtm(np.linalg.inv(Syy))</span><br><span class="line">        M = Sxx_.T.dot(Sxy.dot(Syy_))</span><br><span class="line">        U, S, V = np.linalg.svd(M, full_matrices=<span class="keyword">False</span>)</span><br><span class="line">        u = U[:, <span class="number">0</span>]</span><br><span class="line">        v = V[<span class="number">0</span>, :]</span><br><span class="line">        self.a = Sxx_.dot(u)</span><br><span class="line">        self.b = Syy_.dot(v)</span><br><span class="line">        </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">predict</span><span class="params">(self, X, Y)</span>:</span></span><br><span class="line">        X_ = X.dot(self.a)</span><br><span class="line">        Y_ = Y.dot(self.b)</span><br><span class="line">        <span class="keyword">return</span> X_, Y_</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">cal_corrcoef</span><span class="params">(self, X, Y)</span>:</span></span><br><span class="line">        X_, Y_ = self.predict(X, Y)</span><br><span class="line">        <span class="keyword">return</span> np.corrcoef(X_, Y_)[<span class="number">0</span>,<span class="number">1</span>]</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">CCA</span>:</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span><span class="params">(self)</span>:</span></span><br><span class="line">        self.a = <span class="keyword">None</span></span><br><span class="line">        self.b = <span class="keyword">None</span></span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">train</span><span class="params">(self, X, Y)</span>:</span></span><br><span class="line">        Nx, cx = X.shape</span><br><span class="line">        Ny, cy = Y.shape</span><br><span class="line">        </span><br><span class="line">        <span class="comment"># 标准化 (N, C)</span></span><br><span class="line">        X = (X - np.mean(X, <span class="number">0</span>)) / np.std(X, <span class="number">0</span>)</span><br><span class="line">        Y = (Y - np.mean(Y, <span class="number">0</span>)) / np.std(Y, <span class="number">0</span>)</span><br><span class="line">        </span><br><span class="line">        <span class="comment"># 求三个S</span></span><br><span class="line">        data = np.concatenate([X, Y], axis = <span class="number">1</span>)</span><br><span class="line">        cov = np.cov(data, rowvar=<span class="keyword">False</span>)</span><br><span class="line">        N, C = cov.shape</span><br><span class="line">        Sxx = cov[<span class="number">0</span>:cx, <span class="number">0</span>:cx]</span><br><span class="line">        Syy = cov[cx:C, cx:C]</span><br><span class="line">        Sxy = cov[<span class="number">0</span>:cx, cx:C]</span><br><span class="line">        Sxx_ = linalg.sqrtm(np.linalg.inv(Sxx))</span><br><span class="line">        Syy_ = linalg.sqrtm(np.linalg.inv(Syy))</span><br><span class="line">        M = Sxx_.T.dot(Sxy.dot(Syy_))</span><br><span class="line">        U, S, V = np.linalg.svd(M, full_matrices=<span class="keyword">False</span>)</span><br><span class="line">        u = U[:, <span class="number">0</span>]</span><br><span class="line">        v = V[<span class="number">0</span>, :]</span><br><span class="line">        self.a = Sxx_.dot(u)</span><br><span class="line">        self.b = Syy_.dot(v)</span><br><span class="line">        </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">predict</span><span class="params">(self, X, Y)</span>:</span></span><br><span class="line">        X_ = X.dot(self.a)</span><br><span class="line">        Y_ = Y.dot(self.b)</span><br><span class="line">        <span class="keyword">return</span> X_, Y_</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">cal_corrcoef</span><span class="params">(self, X, Y)</span>:</span></span><br><span class="line">        X_, Y_ = self.predict(X, Y)</span><br><span class="line">        <span class="keyword">return</span> np.corrcoef(X_, Y_)[<span class="number">0</span>,<span class="number">1</span>]</span><br></pre></td></tr></table></figure>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># test</span></span><br><span class="line">n = <span class="number">500</span></span><br><span class="line"><span class="comment"># 2 latents vars:</span></span><br><span class="line">l1 = np.random.normal(size=n)</span><br><span class="line">l2 = np.random.normal(size=n)</span><br><span class="line"></span><br><span class="line">latents = np.array([l1, l1, l2, l2]).T</span><br><span class="line">X = latents + np.random.normal(size=<span class="number">4</span> * n).reshape((n, <span class="number">4</span>))</span><br><span class="line">Y = latents + np.random.normal(size=<span class="number">4</span> * n).reshape((n, <span class="number">4</span>))</span><br><span class="line"></span><br><span class="line">X_train = X[:n // <span class="number">2</span>]</span><br><span class="line">Y_train = Y[:n // <span class="number">2</span>]</span><br><span class="line">X_test = X[n // <span class="number">2</span>:]</span><br><span class="line">Y_test = Y[n // <span class="number">2</span>:]</span><br></pre></td></tr></table></figure>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">print</span> (X_train.shape)</span><br></pre></td></tr></table></figure>
 <pre><code>(250, 4)
@@ -440,6 +440,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/12/20/parsing/" rel="prev" title="parsing">
+                parsing <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -521,7 +525,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">9</span>
+                <span class="site-state-item-count">10</span>
                 <span class="site-state-item-name">日志</span>
               </a>
             </div>
@@ -638,7 +642,7 @@
         <div class="copyright">
   
   &copy; 
-  <span itemprop="copyrightYear">2018</span>
+  <span itemprop="copyrightYear">2019</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
@@ -935,7 +939,24 @@
         }
       });
     </script>
-    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- hexo-inject:end -->
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script><!-- hexo-inject:begin --><!-- Begin: Injected MathJax -->
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config("");
+</script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Queue(function() {
+    var all = MathJax.Hub.getAllJax(), i;
+    for(i=0; i < all.length; i += 1) {
+      all[i].SourceElement().parentNode.className += ' has-jax';
+    }
+  });
+</script>
+
+<script type="text/javascript" src="">
+</script>
+<!-- End: Injected MathJax -->
+<!-- hexo-inject:end -->
   
 
 
